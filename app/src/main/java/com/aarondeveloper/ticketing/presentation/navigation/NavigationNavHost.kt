@@ -78,12 +78,12 @@ fun NavigationNavHost(
             }
             composable<Screen.Compartir> {
                 CompartirScreen(
-
+                    onDrawerToggle = { isDrawerVisible.value = !isDrawerVisible.value }
                 )
             }
             composable<Screen.Ajustes> {
                 AjustesScreen(
-
+                    onDrawerToggle = { isDrawerVisible.value = !isDrawerVisible.value }
                 )
             }
             composable<Screen.Informacion> {
