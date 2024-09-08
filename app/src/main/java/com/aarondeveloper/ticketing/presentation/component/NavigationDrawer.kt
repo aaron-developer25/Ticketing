@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.aarondeveloper.ticketing.R
 import com.aarondeveloper.ticketing.ui.theme.Gray
@@ -79,6 +79,9 @@ fun NavigationDrawer(
 
 @Composable
 fun DrawerHeader(onClose: () -> Unit) {
+    val context = LocalContext.current
+    val versionName = context.packageManager
+        .getPackageInfo(context.packageName, 0).versionName
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +110,7 @@ fun DrawerHeader(onClose: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(1.dp))
             Text(
-                text = "v1.0.0",
+                text = "v $versionName",
                 color = Color.White,
                 fontSize = 14.sp
             )
@@ -115,6 +118,7 @@ fun DrawerHeader(onClose: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun DrawerBody(

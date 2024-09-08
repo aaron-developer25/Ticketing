@@ -88,7 +88,7 @@ fun NavigationNavHost(
             }
             composable<Screen.Informacion> {
                 InformacionScreen(
-
+                    onDrawerToggle = { isDrawerVisible.value = !isDrawerVisible.value }
                 )
             }
         }
