@@ -3,14 +3,33 @@ package com.aarondeveloper.ticketing.presentation.screens.perioridades
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,31 +39,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarondeveloper.ticketing.R
 import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity
-import com.aarondeveloper.ticketing.presentation.navigation.Screen
 import com.aarondeveloper.ticketing.ui.theme.Lavender
 import com.aarondeveloper.ticketing.ui.theme.White
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun IndexPrioridadesScreen(
+    viewModel: PrioridadViewModel = hiltViewModel(),
     onDrawerToggle: () -> Unit,
-    PrioridadesLista: Flow<List<PrioridadEntity>>,
-    navController: NavController
+    goToPrioridad: () -> Unit,
+    createPrioridad: () -> Unit,
+    editPrioridad: (Int) -> Unit,
+    deletePrioridad: (Int) -> Unit
 ) {
-    var prioridades by remember { mutableStateOf(emptyList<PrioridadEntity>()) }
-    val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(PrioridadesLista) {
-        PrioridadesLista.collect { data ->
-            prioridades = data
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -95,41 +106,19 @@ fun IndexPrioridadesScreen(
                 .fillMaxSize()
                 .padding(top = 280.dp)
         ) {
-            if (prioridades.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ico_busqueda),
-                            contentDescription = "NO SE ENCONTRARON PRIORIDADES",
-                            modifier = Modifier.size(200.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "NO SE ENCONTRARON PRIORIDADES",
-                            color = Color.Gray,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+            if (uiState.prioridades.isEmpty()) {
+                MensajePersonalizado()
             } else {
                 PrioridadesList(
-                    prioridades = prioridades,
+                    prioridades = uiState.prioridades,
                     onEditClick = { prioridad ->
                         prioridad.PrioridadId?.let { id ->
-                            navController.navigate(Screen.EditarPrioridades(prioridadId = id))
+                            editPrioridad(id)
                         }
                     },
                     onDeleteClick = { prioridad ->
                         prioridad.PrioridadId?.let { id ->
-                            navController.navigate(Screen.EliminarPrioridades(prioridadId = id))
+                            deletePrioridad(id)
                         }
                     }
                 )
@@ -137,9 +126,7 @@ fun IndexPrioridadesScreen(
         }
 
         FloatingActionButton(
-            onClick = {
-                navController.navigate(Screen.CrearPrioridades)
-            },
+            onClick = createPrioridad,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 60.dp, end = 16.dp),
@@ -151,11 +138,17 @@ fun IndexPrioridadesScreen(
                 contentDescription = "Agregar Prioridad"
             )
         }
+
+        uiState.errorMessage?.let { message ->
+            Text(
+                text = message,
+                color = Color.Red,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
     }
 }
-
-
-
 
 @Composable
 fun PrioridadesList(
@@ -179,6 +172,7 @@ fun PrioridadesList(
         }
     }
 }
+
 
 @Composable
 fun PrioridadCard(
@@ -256,14 +250,44 @@ fun PrioridadCard(
 }
 
 
+@Composable
+fun MensajePersonalizado() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ico_busqueda),
+                contentDescription = "NO SE ENCONTRARON PRIORIDADES",
+                modifier = Modifier.size(200.dp)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "NO SE ENCONTRARON PRIORIDADES",
+                color = Color.Gray,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun IndexPrioridadesScreenPreview() {
-    val navController = rememberNavController()
     IndexPrioridadesScreen(
-        onDrawerToggle = {/* */},
-        PrioridadesLista = flowOf( /*  */),
-        navController = navController
+        viewModel = hiltViewModel(),
+        onDrawerToggle = {},
+        goToPrioridad = {},
+        createPrioridad = {},
+        editPrioridad = {},
+        deletePrioridad = {}
     )
 }
