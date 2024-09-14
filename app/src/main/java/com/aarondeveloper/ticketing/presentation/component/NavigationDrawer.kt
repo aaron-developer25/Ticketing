@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Divider
@@ -63,6 +64,7 @@ fun NavigationDrawer(
                     items = listOf(
                         MenuItem("Home", Icons.Default.Home),
                         MenuItem("Prioridades", Icons.Default.DateRange),
+                        MenuItem("Tickets", Icons.Default.MailOutline),
                         MenuItem("Compartir", Icons.Default.Share),
                         MenuItem("Ajustes", Icons.Default.Settings),
                         MenuItem("Información", Icons.Default.Info)
@@ -129,8 +131,13 @@ fun DrawerBody(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column {
-            items.forEach { item ->
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxHeight(0.8f)
+        ) {
+            items(items.size) { index ->
+                val item = items[index]
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -152,26 +159,28 @@ fun DrawerBody(
                     )
                 }
             }
-            Divider(color = Gray)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onItemClick("Salir")
-                    }
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ExitToApp,
-                    contentDescription = "Salir",
-                    tint = Lavender
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(
-                    text = "Salir",
-                    fontSize = 18.sp,
-                    color = Lavender
-                )
+            item {
+                Divider(color = Gray)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onItemClick("Salir")
+                        }
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ExitToApp,
+                        contentDescription = "Salir",
+                        tint = Lavender
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = "Salir",
+                        fontSize = 18.sp,
+                        color = Lavender
+                    )
+                }
             }
         }
     }

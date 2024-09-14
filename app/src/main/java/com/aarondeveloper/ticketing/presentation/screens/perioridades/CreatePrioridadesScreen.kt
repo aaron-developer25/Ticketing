@@ -7,18 +7,32 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,38 +42,43 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aarondeveloper.ticketing.R
-import com.aarondeveloper.ticketing.data.local.dao.PrioridadDao
-import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity
-import com.aarondeveloper.ticketing.presentation.navigation.Screen
 import com.aarondeveloper.ticketing.ui.theme.Green
 import com.aarondeveloper.ticketing.ui.theme.Lavender
 import com.aarondeveloper.ticketing.ui.theme.White
-import kotlinx.coroutines.launch
 
 @Composable
 fun CreatePrioridadesScreen(
+    viewModel: PrioridadViewModel = hiltViewModel(),
     onDrawerToggle: () -> Unit,
-    navController: NavController,
-    prioridadDao: PrioridadDao? = null
+    goToPrioridad: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-    var descripcion by remember { mutableStateOf("") }
-    var diasCompromiso by remember { mutableStateOf("") }
-    var validationMessage by remember { mutableStateOf<String?>(null) }
 
-    val prioridades = remember { mutableStateOf<List<PrioridadEntity>>(emptyList()) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    BodyCreatePrioridades(
+        uiState = uiState,
+        onDescripcionChange = viewModel::onDescripcionChange,
+        onDiasCompromisoChange = viewModel::onDiasCompromisoChange,
+        onDrawerToggle = onDrawerToggle,
+        goToPrioridad = goToPrioridad,
+        savePrioridad = viewModel::save
+    )
+}
 
-    if (prioridadDao != null) {
-        val collectedPrioridades by prioridadDao.getAll().collectAsState(initial = emptyList())
-        prioridades.value = collectedPrioridades
-    }
+@Composable
+fun BodyCreatePrioridades(
+    uiState: UiState,
+    onDrawerToggle: () -> Unit,
+    onDescripcionChange: (String) -> Unit,
+    onDiasCompromisoChange: (String) -> Unit,
+    goToPrioridad: () -> Unit,
+    savePrioridad: () -> Unit
+) {
 
     Box(
         modifier = Modifier
@@ -109,7 +128,7 @@ fun CreatePrioridadesScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .padding(top = 150.dp)
+                .padding(top = 160.dp)
         ) {
             Card(
                 modifier = Modifier
@@ -136,8 +155,8 @@ fun CreatePrioridadesScreen(
                             .border(BorderStroke(2.dp, Lavender), shape = RoundedCornerShape(10.dp))
                     ) {
                         BasicTextField(
-                            value = descripcion,
-                            onValueChange = { descripcion = it },
+                            value = uiState.descripcion ?: "",
+                            onValueChange = onDescripcionChange,
                             textStyle = TextStyle(
                                 color = Green,
                                 fontSize = 16.sp
@@ -152,7 +171,7 @@ fun CreatePrioridadesScreen(
                                 .padding(start = 16.dp, top = 8.dp)
                         ) {
                             this@Column.AnimatedVisibility(
-                                visible = descripcion.isEmpty(),
+                                visible = uiState.descripcion.isNullOrEmpty(),
                                 enter = fadeIn(),
                                 exit = fadeOut(),
                                 modifier = Modifier
@@ -173,8 +192,8 @@ fun CreatePrioridadesScreen(
                             .border(BorderStroke(2.dp, Lavender), shape = RoundedCornerShape(10.dp))
                     ) {
                         BasicTextField(
-                            value = diasCompromiso,
-                            onValueChange = { diasCompromiso = it },
+                            value = uiState.diascompromiso ?: "",
+                            onValueChange = onDiasCompromisoChange,
                             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
                             textStyle = TextStyle(
                                 color = Green,
@@ -190,7 +209,7 @@ fun CreatePrioridadesScreen(
                                 .padding(start = 16.dp, top = 8.dp)
                         ) {
                             this@Column.AnimatedVisibility(
-                                visible = diasCompromiso.isEmpty(),
+                                visible = uiState.diascompromiso.isNullOrEmpty(),
                                 enter = fadeIn(),
                                 exit = fadeOut(),
                                 modifier = Modifier
@@ -205,7 +224,7 @@ fun CreatePrioridadesScreen(
                         }
                     }
 
-                    validationMessage?.let { message ->
+                    uiState.errorMessage?.let { message ->
                         Text(
                             text = message,
                             color = Color.Red,
@@ -216,25 +235,7 @@ fun CreatePrioridadesScreen(
 
                     Button(
                         onClick = {
-                            coroutineScope.launch {
-                                val dias = diasCompromiso.toIntOrNull()
-                                if (descripcion.isBlank() || dias == null || dias <= 0) {
-                                    validationMessage = "Por favor, completa todos los campos correctamente."
-                                } else {
-                                    val existingPrioridades = prioridades.value.firstOrNull { it.Descripcion == descripcion }
-                                    if (existingPrioridades != null) {
-                                        validationMessage = "Ya existe una prioridad con esta descripción."
-                                    } else {
-                                        validationMessage = null
-                                        val prioridad = PrioridadEntity(
-                                            Descripcion = descripcion,
-                                            DiasCompromiso = dias
-                                        )
-                                        prioridadDao?.save(prioridad)
-                                        navController.navigate(Screen.ControlPanelPrioridades)
-                                    }
-                                }
-                            }
+                            savePrioridad()
                         },
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -264,7 +265,6 @@ fun CreatePrioridadesScreen(
                     }
                 }
             }
-
             Image(
                 painter = painterResource(id = R.drawable.ico_emojis_emocionado),
                 contentDescription = "Imagen Prioridad",
@@ -276,23 +276,22 @@ fun CreatePrioridadesScreen(
                     .background(Color.White)
                     .border(3.dp, Lavender, CircleShape)
             )
+
+            LaunchedEffect(uiState.guardado) {
+                if (uiState.guardado == true) {
+                    goToPrioridad()
+                }
+            }
         }
     }
 }
 
 
-
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun CreatePrioridadesScreenPreview() {
-    val navController = rememberNavController()
-
-
+fun PreviewCreatePrioridadesScreen() {
     CreatePrioridadesScreen(
-        onDrawerToggle = { /* */ },
-        navController = navController,
-        prioridadDao = null
+        onDrawerToggle = {},
+        goToPrioridad = {}
     )
-
 }

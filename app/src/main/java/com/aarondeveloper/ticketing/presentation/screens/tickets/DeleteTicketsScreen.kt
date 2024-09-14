@@ -1,4 +1,4 @@
-package com.aarondeveloper.ticketing.presentation.screens.perioridades
+package com.aarondeveloper.ticketing.presentation.screens.tickets
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,24 +46,24 @@ import com.aarondeveloper.ticketing.ui.theme.Red
 import com.aarondeveloper.ticketing.ui.theme.White
 
 @Composable
-fun DeletePrioridadesScreen(
-    viewModel: PrioridadViewModel = hiltViewModel(),
-    prioridadId: Int?,
+fun DeleteTicketsScreen(
+    viewModel: TicketViewModel = hiltViewModel(),
+    ticketId: Int?,
     onDrawerToggle: () -> Unit,
-    goToPrioridad: () -> Unit,
+    goToTicket: () -> Unit,
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = true) {
-        if (prioridadId != null) {
-            viewModel.selectedPrioridad(prioridadId)
+        if (ticketId != null) {
+            viewModel.selectedTicket(ticketId)
         }
     }
     BodyDeletePrioridades(
         uiState = uiState,
         onDrawerToggle = onDrawerToggle,
-        goToPrioridad = goToPrioridad,
-        deletePrioridad = viewModel::delete,
+        goToTicket = goToTicket,
+        deleteTicket = viewModel::delete,
     )
 }
 
@@ -72,8 +72,8 @@ fun DeletePrioridadesScreen(
 fun BodyDeletePrioridades(
     uiState: UiState,
     onDrawerToggle: () -> Unit,
-    goToPrioridad: () -> Unit,
-    deletePrioridad: () -> Unit
+    goToTicket: () -> Unit,
+    deleteTicket: () -> Unit
 ){
 
 
@@ -82,7 +82,7 @@ fun BodyDeletePrioridades(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bkg_prioridades_eliminar),
+            painter = painterResource(id = R.drawable.bkg_tickets_eliminar),
             contentDescription = "Background Principal",
             modifier = Modifier
                 .fillMaxSize(),
@@ -146,7 +146,7 @@ fun BodyDeletePrioridades(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "¿Estás seguro que deseas eliminar esta prioridad?",
+                        text = "¿Estás seguro que deseas eliminar este ticket?",
                         style = TextStyle(
                             color = Green,
                             fontSize = 18.sp,
@@ -173,7 +173,10 @@ fun BodyDeletePrioridades(
                     ) {
                         Button(
                             onClick = {
-                                deletePrioridad()
+                                deleteTicket()
+                                if(uiState.errorMessage == null || uiState.errorMessage == ""){
+                                    goToTicket()
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -194,7 +197,7 @@ fun BodyDeletePrioridades(
 
                         Button(
                             onClick = {
-                                goToPrioridad()
+                                goToTicket()
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -227,12 +230,6 @@ fun BodyDeletePrioridades(
                     .background(Color.White)
                     .border(3.dp, Lavender, CircleShape)
             )
-
-            LaunchedEffect(uiState.guardado) {
-                if (uiState.guardado == true) {
-                    goToPrioridad()
-                }
-            }
         }
     }
 
@@ -243,11 +240,11 @@ fun BodyDeletePrioridades(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun DeletePrioridadesScreenPreview() {
+fun DeleteTicketsScreenPreview() {
 
-    DeletePrioridadesScreen(
-        prioridadId = 1,
+    DeleteTicketsScreen(
+        ticketId = 1,
         onDrawerToggle = {},
-        goToPrioridad = {}
+        goToTicket = {}
     )
 }
