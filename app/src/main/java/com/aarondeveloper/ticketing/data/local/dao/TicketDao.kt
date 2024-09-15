@@ -16,7 +16,7 @@ interface TicketDao {
         """
         SELECT * 
         FROM Tickets 
-        WHERE TicketId = :id  
+        WHERE ticketId = :id  
         LIMIT 1
         """
     )

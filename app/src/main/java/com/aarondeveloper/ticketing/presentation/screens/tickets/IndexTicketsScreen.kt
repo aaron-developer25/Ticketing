@@ -113,12 +113,12 @@ fun IndexTicketsScreen(
                 TicketsList(
                     tickets = uiState.tickets,
                     onEditClick = { ticket ->
-                        ticket.TicketId?.let { id ->
+                        ticket.ticketId?.let { id ->
                             editTicket(id)
                         }
                     },
                     onDeleteClick = { ticket ->
-                        ticket.TicketId?.let { id ->
+                        ticket.ticketId?.let { id ->
                             deleteTicket(id)
                         }
                     }
@@ -217,18 +217,18 @@ fun TicketCard(
             )
             {
                 Text(
-                    text = ticket.Cliente,
+                    text = ticket.cliente,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.White
                 )
                 Text(
-                    text = ticket.Asunto,
+                    text = ticket.asunto,
                     fontSize = 14.sp,
                     color = Color.White
                 )
                 Text(
-                    text = ticket.Fecha.toString(),
+                    text = ticket.fecha.toString(),
                     fontSize = 14.sp,
                     color = Color.White
                 )

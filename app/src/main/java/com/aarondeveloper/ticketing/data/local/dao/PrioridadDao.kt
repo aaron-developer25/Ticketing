@@ -12,14 +12,14 @@ interface PrioridadDao {
     @Upsert
     suspend fun save(prioridad: PrioridadEntity)
 
-    @Query("SELECT * FROM Prioridades WHERE Descripcion = :descripcion LIMIT 1")
+    @Query("SELECT * FROM Prioridades WHERE descripcion = :descripcion LIMIT 1")
     suspend fun findByDescripcion(descripcion: String): PrioridadEntity?
 
     @Query(
         """
         SELECT * 
         FROM Prioridades 
-        WHERE PrioridadId = :id  
+        WHERE prioridadId = :id  
         LIMIT 1
         """
     )

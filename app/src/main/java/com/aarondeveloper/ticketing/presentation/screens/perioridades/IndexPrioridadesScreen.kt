@@ -112,12 +112,12 @@ fun IndexPrioridadesScreen(
                 PrioridadesList(
                     prioridades = uiState.prioridades,
                     onEditClick = { prioridad ->
-                        prioridad.PrioridadId?.let { id ->
+                        prioridad.prioridadId?.let { id ->
                             editPrioridad(id)
                         }
                     },
                     onDeleteClick = { prioridad ->
-                        prioridad.PrioridadId?.let { id ->
+                        prioridad.prioridadId?.let { id ->
                             deletePrioridad(id)
                         }
                     }
@@ -216,13 +216,13 @@ fun PrioridadCard(
             )
             {
                 Text(
-                    text = prioridad.Descripcion,
+                    text = prioridad.descripcion,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     color = Color.White
                 )
                 Text(
-                    text = "${prioridad.DiasCompromiso} días",
+                    text = "${prioridad.diasCompromiso} días",
                     fontSize = 14.sp,
                     color = Color.White
                 )

@@ -72,12 +72,12 @@ class TicketViewModel @Inject constructor(
                 val ticket = ticketRepository.getTicket(ticketId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        ticketId = ticket?.TicketId,
-                        prioridadId = ticket?.PrioridadId,
-                        fecha = ticket?.Fecha ?: "",
-                        cliente = ticket?.Cliente ?: "",
-                        asunto = ticket?.Asunto ?: "",
-                        descripcion = ticket?.Descripcion ?: "",
+                        ticketId = ticket?.ticketId,
+                        prioridadId = ticket?.prioridadId,
+                        fecha = ticket?.fecha ?: "",
+                        cliente = ticket?.cliente ?: "",
+                        asunto = ticket?.asunto ?: "",
+                        descripcion = ticket?.descripcion ?: "",
                         errorMessage = null
                     )
                 }
@@ -159,10 +159,10 @@ data class UiState(
 )
 
 fun UiState.toEntity() = TicketEntity(
-    TicketId = ticketId,
-    PrioridadId = prioridadId,
-    Fecha = fecha ?: "",
-    Cliente = cliente ?: "",
-    Asunto = asunto ?: "",
-    Descripcion = descripcion ?: ""
+    ticketId = ticketId,
+    prioridadId = prioridadId ?: 0,
+    fecha = fecha ?: "",
+    cliente = cliente ?: "",
+    asunto = asunto ?: "",
+    descripcion = descripcion ?: ""
 )
