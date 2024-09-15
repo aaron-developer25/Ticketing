@@ -22,10 +22,15 @@ class PrioridadViewModel @Inject constructor(
         getPrioridades()
     }
 
+    fun validarCampos(): Boolean {
+        return !_uiState.value.descripcion.isNullOrBlank() &&
+                _uiState.value.diascompromiso?.toIntOrNull() != null &&
+                _uiState.value.diascompromiso!!.toInt() > 0
+    }
+
     fun save() {
         viewModelScope.launch {
-
-            if (_uiState.value.descripcion.isNullOrBlank() || _uiState.value.diascompromiso == null || _uiState.value.diascompromiso?.toIntOrNull()!! <= 0) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -48,9 +53,7 @@ class PrioridadViewModel @Inject constructor(
 
     fun update() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.diascompromiso.isNullOrBlank() ||
-                _uiState.value.diascompromiso?.toIntOrNull()!! <= 0) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -79,6 +82,7 @@ class PrioridadViewModel @Inject constructor(
             _uiState.update { it.copy(errorMessage = null, guardado = true) }
         }
     }
+
 
     fun selectedPrioridad(prioridadId: Int) {
         viewModelScope.launch {

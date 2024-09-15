@@ -27,13 +27,17 @@ class TicketViewModel @Inject constructor(
         getPrioridades()
     }
 
+    fun validarCampos(): Boolean {
+        return !_uiState.value.descripcion.isNullOrBlank() &&
+                !_uiState.value.cliente.isNullOrBlank() &&
+                !_uiState.value.asunto.isNullOrBlank() &&
+                !_uiState.value.fecha.isNullOrBlank() &&
+                _uiState.value.prioridadId != null
+    }
+
     fun save() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.cliente.isNullOrBlank() ||
-                _uiState.value.asunto.isNullOrBlank() ||
-                _uiState.value.fecha.isNullOrBlank() ||
-                _uiState.value.prioridadId == null) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -48,12 +52,7 @@ class TicketViewModel @Inject constructor(
 
     fun update() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.cliente.isNullOrBlank() ||
-                _uiState.value.asunto.isNullOrBlank() ||
-                _uiState.value.fecha.isNullOrBlank() ||
-                _uiState.value.prioridadId == null ||
-                _uiState.value.ticketId == null) {
+            if (!validarCampos() || _uiState.value.ticketId == null) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -65,6 +64,7 @@ class TicketViewModel @Inject constructor(
             _uiState.update { it.copy(errorMessage = null, guardado = true) }
         }
     }
+
 
     fun selectedTicket(ticketId: Int) {
         viewModelScope.launch {
