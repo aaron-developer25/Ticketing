@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PrioridadDao {
-    @Upsert()
+    @Upsert
     suspend fun save(prioridad: PrioridadEntity)
 
     @Query("SELECT * FROM Prioridades WHERE Descripcion = :descripcion LIMIT 1")
@@ -19,14 +19,14 @@ interface PrioridadDao {
         """
         SELECT * 
         FROM Prioridades 
-        WHERE PrioridadId=:id  
+        WHERE PrioridadId = :id  
         LIMIT 1
         """
     )
     suspend fun find(id: Int): PrioridadEntity?
 
     @Delete
-    suspend fun delete(da: PrioridadEntity)
+    suspend fun delete(prioridad: PrioridadEntity)
 
     @Query("SELECT * FROM Prioridades")
     fun getAll(): Flow<List<PrioridadEntity>>

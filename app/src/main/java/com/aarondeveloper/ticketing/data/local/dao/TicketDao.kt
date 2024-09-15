@@ -9,21 +9,21 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TicketDao {
-    @Upsert()
+    @Upsert
     suspend fun save(ticket: TicketEntity)
 
     @Query(
         """
         SELECT * 
         FROM Tickets 
-        WHERE TicketId=:id  
+        WHERE TicketId = :id  
         LIMIT 1
         """
     )
     suspend fun find(id: Int): TicketEntity?
 
     @Delete
-    suspend fun delete(da: TicketEntity)
+    suspend fun delete(ticket: TicketEntity)
 
     @Query("SELECT * FROM Tickets")
     fun getAll(): Flow<List<TicketEntity>>
