@@ -1,4 +1,4 @@
-package com.aarondeveloper.ticketing.data.local
+package com.aarondeveloper.ticketing.data.local.di
 
 import android.content.Context
 import androidx.room.Room
