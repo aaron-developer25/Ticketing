@@ -3,7 +3,7 @@ package com.aarondeveloper.ticketing.presentation.screens.perioridades
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity
-import com.aarondeveloper.ticketing.data.local.repository.PrioridadRepository
+import com.aarondeveloper.ticketing.data.repository.PrioridadRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
