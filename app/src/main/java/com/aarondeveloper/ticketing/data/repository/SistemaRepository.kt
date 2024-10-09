@@ -1,7 +1,7 @@
 package com.aarondeveloper.ticketing.data.repository
 
 import com.aarondeveloper.ticketing.data.remote.api.TicketingApi
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import javax.inject.Inject
 
 class SistemaRepository @Inject constructor(

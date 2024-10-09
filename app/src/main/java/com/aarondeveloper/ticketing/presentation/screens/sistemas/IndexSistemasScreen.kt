@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarondeveloper.ticketing.R
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import com.aarondeveloper.ticketing.ui.theme.Lavender
 import com.aarondeveloper.ticketing.ui.theme.White
 

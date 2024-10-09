@@ -1,6 +1,6 @@
 package com.aarondeveloper.ticketing.data.remote.api
 
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
