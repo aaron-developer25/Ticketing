@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity
 import com.aarondeveloper.ticketing.data.local.entities.TicketEntity
-import com.aarondeveloper.ticketing.data.local.repository.PrioridadRepository
-import com.aarondeveloper.ticketing.data.local.repository.TicketRepository
+import com.aarondeveloper.ticketing.data.repository.PrioridadRepository
+import com.aarondeveloper.ticketing.data.repository.TicketRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,13 +27,17 @@ class TicketViewModel @Inject constructor(
         getPrioridades()
     }
 
+    fun validarCampos(): Boolean {
+        return !_uiState.value.descripcion.isNullOrBlank() &&
+                !_uiState.value.cliente.isNullOrBlank() &&
+                !_uiState.value.asunto.isNullOrBlank() &&
+                !_uiState.value.fecha.isNullOrBlank() &&
+                _uiState.value.prioridadId != null
+    }
+
     fun save() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.cliente.isNullOrBlank() ||
-                _uiState.value.asunto.isNullOrBlank() ||
-                _uiState.value.fecha.isNullOrBlank() ||
-                _uiState.value.prioridadId == null) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -48,12 +52,7 @@ class TicketViewModel @Inject constructor(
 
     fun update() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.cliente.isNullOrBlank() ||
-                _uiState.value.asunto.isNullOrBlank() ||
-                _uiState.value.fecha.isNullOrBlank() ||
-                _uiState.value.prioridadId == null ||
-                _uiState.value.ticketId == null) {
+            if (!validarCampos() || _uiState.value.ticketId == null) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -66,18 +65,19 @@ class TicketViewModel @Inject constructor(
         }
     }
 
+
     fun selectedTicket(ticketId: Int) {
         viewModelScope.launch {
             if (ticketId > 0) {
                 val ticket = ticketRepository.getTicket(ticketId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        ticketId = ticket?.TicketId,
-                        prioridadId = ticket?.PrioridadId,
-                        fecha = ticket?.Fecha ?: "",
-                        cliente = ticket?.Cliente ?: "",
-                        asunto = ticket?.Asunto ?: "",
-                        descripcion = ticket?.Descripcion ?: "",
+                        ticketId = ticket?.ticketId,
+                        prioridadId = ticket?.prioridadId,
+                        fecha = ticket?.fecha ?: "",
+                        cliente = ticket?.cliente ?: "",
+                        asunto = ticket?.asunto ?: "",
+                        descripcion = ticket?.descripcion ?: "",
                         errorMessage = null
                     )
                 }
@@ -159,10 +159,10 @@ data class UiState(
 )
 
 fun UiState.toEntity() = TicketEntity(
-    TicketId = ticketId,
-    PrioridadId = prioridadId,
-    Fecha = fecha ?: "",
-    Cliente = cliente ?: "",
-    Asunto = asunto ?: "",
-    Descripcion = descripcion ?: ""
+    ticketId = ticketId,
+    prioridadId = prioridadId ?: 0,
+    fecha = fecha ?: "",
+    cliente = cliente ?: "",
+    asunto = asunto ?: "",
+    descripcion = descripcion ?: ""
 )

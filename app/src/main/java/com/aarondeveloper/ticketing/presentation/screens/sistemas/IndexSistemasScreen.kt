@@ -1,4 +1,4 @@
-package com.aarondeveloper.ticketing.presentation.screens.tickets
+package com.aarondeveloper.ticketing.presentation.screens.sistemas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,19 +41,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarondeveloper.ticketing.R
-import com.aarondeveloper.ticketing.data.local.entities.TicketEntity
+import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
 import com.aarondeveloper.ticketing.ui.theme.Lavender
 import com.aarondeveloper.ticketing.ui.theme.White
 
-
 @Composable
-fun IndexTicketsScreen(
-    viewModel: TicketViewModel = hiltViewModel(),
+fun IndexSistemasScreen(
+    viewModel: SistemaViewModel = hiltViewModel(),
     onDrawerToggle: () -> Unit,
-    goToTicket: () -> Unit,
-    createTicket: () -> Unit,
-    editTicket: (Int) -> Unit,
-    deleteTicket: (Int) -> Unit
+    goToSistema: () -> Unit,
+    createSistema: () -> Unit,
+    editSistema: (Int) -> Unit,
+    deleteSistema: (Int) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsState()
@@ -62,7 +61,7 @@ fun IndexTicketsScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.bkg_tickets_control),
+            painter = painterResource(id = R.drawable.bkg_sistemas_control),
             contentDescription = "Background Principal",
             modifier = Modifier
                 .fillMaxSize(),
@@ -107,19 +106,19 @@ fun IndexTicketsScreen(
                 .fillMaxSize()
                 .padding(top = 280.dp)
         ) {
-            if (uiState.tickets.isEmpty()) {
+            if (uiState.sistemas.isEmpty()) {
                 MensajePersonalizado()
             } else {
-                TicketsList(
-                    tickets = uiState.tickets,
-                    onEditClick = { ticket ->
-                        ticket.ticketId?.let { id ->
-                            editTicket(id)
+                SistemasList(
+                    sistemas = uiState.sistemas,
+                    onEditClick = { sistema ->
+                        sistema.sistemaId?.let { id ->
+                            editSistema(id)
                         }
                     },
-                    onDeleteClick = { ticket ->
-                        ticket.ticketId?.let { id ->
-                            deleteTicket(id)
+                    onDeleteClick = { sistema ->
+                        sistema.sistemaId?.let { id ->
+                            deleteSistema(id)
                         }
                     }
                 )
@@ -127,7 +126,7 @@ fun IndexTicketsScreen(
         }
 
         FloatingActionButton(
-            onClick = createTicket,
+            onClick = createSistema,
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 60.dp, end = 16.dp),
@@ -136,7 +135,7 @@ fun IndexTicketsScreen(
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
-                contentDescription = "Agregar Ticket"
+                contentDescription = "Agregar Sistema"
             )
         }
 
@@ -152,10 +151,10 @@ fun IndexTicketsScreen(
 }
 
 @Composable
-fun TicketsList(
-    tickets: List<TicketEntity>,
-    onEditClick: (TicketEntity) -> Unit,
-    onDeleteClick: (TicketEntity) -> Unit,
+fun SistemasList(
+    sistemas: List<SistemaDto>,
+    onEditClick: (SistemaDto) -> Unit,
+    onDeleteClick: (SistemaDto) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -163,12 +162,12 @@ fun TicketsList(
             .fillMaxWidth()
             .padding(top = 0.dp)
     ) {
-        items(tickets) { ticket ->
-            TicketCard(
-                ticket = ticket,
+        items(sistemas) { sistema ->
+            SistemaCard(
+                sistema = sistema,
                 onEditClick = onEditClick,
                 onDeleteClick = onDeleteClick,
-                index = tickets.indexOf(ticket) + 1
+                index = sistemas.indexOf(sistema) + 1
             )
         }
     }
@@ -176,10 +175,10 @@ fun TicketsList(
 
 
 @Composable
-fun TicketCard(
-    ticket: TicketEntity,
-    onEditClick: (TicketEntity) -> Unit,
-    onDeleteClick: (TicketEntity) -> Unit,
+fun SistemaCard(
+    sistema: SistemaDto,
+    onEditClick: (SistemaDto) -> Unit,
+    onDeleteClick: (SistemaDto) -> Unit,
     index: Int
 ) {
     Card(
@@ -200,8 +199,7 @@ fun TicketCard(
             Column(
                 modifier = Modifier
                     .padding(start = 16.dp)
-            )
-            {
+            ) {
                 Text(
                     text = "$index.",
                     fontWeight = FontWeight.Bold,
@@ -214,36 +212,25 @@ fun TicketCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 16.dp)
-            )
-            {
+            ) {
                 Text(
-                    text = ticket.cliente,
+                    text = sistema.nombre,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = ticket.asunto,
-                    fontSize = 14.sp,
-                    color = Color.White
-                )
-                Text(
-                    text = ticket.fecha.toString(),
-                    fontSize = 14.sp,
                     color = Color.White
                 )
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                IconButton(onClick = { onEditClick(ticket) }) {
+                IconButton(onClick = { onEditClick(sistema) }) {
                     Image(
                         painter = painterResource(id = R.drawable.ico_editar),
                         contentDescription = "Editar",
                         modifier = Modifier.size(32.dp)
                     )
                 }
-                IconButton(onClick = { onDeleteClick(ticket) }) {
+                IconButton(onClick = { onDeleteClick(sistema) }) {
                     Image(
                         painter = painterResource(id = R.drawable.ico_eliminar),
                         contentDescription = "Eliminar",
@@ -269,12 +256,12 @@ fun MensajePersonalizado() {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ico_busqueda),
-                contentDescription = "NO SE ENCONTRARON TICKETS",
+                contentDescription = "NO SE ENCONTRARON SISTEMAS",
                 modifier = Modifier.size(200.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "NO SE ENCONTRARON TICKETS",
+                text = "NO SE ENCONTRARON SISTEMAS",
                 color = Color.Gray,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
@@ -284,16 +271,15 @@ fun MensajePersonalizado() {
 }
 
 
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun IndexPrioridadesScreenPreview() {
-    IndexTicketsScreen(
+fun IndexSistemasScreenPreview() {
+    IndexSistemasScreen(
         viewModel = hiltViewModel(),
         onDrawerToggle = {},
-        goToTicket = {},
-        createTicket = {},
-        editTicket = {},
-        deleteTicket = {}
+        goToSistema = {},
+        createSistema = {},
+        editSistema = {},
+        deleteSistema = {}
     )
 }

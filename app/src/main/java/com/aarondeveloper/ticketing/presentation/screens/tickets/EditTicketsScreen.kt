@@ -378,7 +378,7 @@ fun CustomSelectEditar(
     onPrioridadChange: (Int) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val selectedPrioridad = uiState.prioridades.find { it.PrioridadId == uiState.prioridadId }
+    val selectedPrioridad = uiState.prioridades.find { it.prioridadId == uiState.prioridadId }
     val context = LocalContext.current
 
     Box(
@@ -395,7 +395,7 @@ fun CustomSelectEditar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = selectedPrioridad?.Descripcion ?: "",
+                text = selectedPrioridad?.descripcion ?: "",
                 style = TextStyle(
                     color = Green,
                     fontSize = 16.sp
@@ -426,12 +426,12 @@ fun CustomSelectEditar(
             uiState.prioridades.forEach { prioridad ->
                 DropdownMenuItem(
                     onClick = {
-                        onPrioridadChange(prioridad.PrioridadId ?: 0)
+                        onPrioridadChange(prioridad.prioridadId ?: 0)
                         expanded.value = false
-                        Toast.makeText(context, prioridad.Descripcion, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, prioridad.descripcion, Toast.LENGTH_SHORT).show()
                     },
                     text = {
-                        Text(text = prioridad.Descripcion)
+                        Text(text = prioridad.descripcion)
                     }
                 )
             }

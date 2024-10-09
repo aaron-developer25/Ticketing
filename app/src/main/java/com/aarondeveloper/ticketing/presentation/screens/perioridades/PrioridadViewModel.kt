@@ -3,7 +3,7 @@ package com.aarondeveloper.ticketing.presentation.screens.perioridades
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity
-import com.aarondeveloper.ticketing.data.local.repository.PrioridadRepository
+import com.aarondeveloper.ticketing.data.repository.PrioridadRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,17 +22,22 @@ class PrioridadViewModel @Inject constructor(
         getPrioridades()
     }
 
+    fun validarCampos(): Boolean {
+        return !_uiState.value.descripcion.isNullOrBlank() &&
+                _uiState.value.diascompromiso?.toIntOrNull() != null &&
+                _uiState.value.diascompromiso!!.toInt() > 0
+    }
+
     fun save() {
         viewModelScope.launch {
-
-            if (_uiState.value.descripcion.isNullOrBlank() || _uiState.value.diascompromiso == null || _uiState.value.diascompromiso?.toIntOrNull()!! <= 0) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
                 return@launch
             }
 
-            val existe = _uiState.value.prioridades.firstOrNull { it.Descripcion == _uiState.value.descripcion }
+            val existe = _uiState.value.prioridades.firstOrNull { it.descripcion == _uiState.value.descripcion }
 
             if (existe != null) {
                 _uiState.update {
@@ -48,9 +53,7 @@ class PrioridadViewModel @Inject constructor(
 
     fun update() {
         viewModelScope.launch {
-            if (_uiState.value.descripcion.isNullOrBlank() ||
-                _uiState.value.diascompromiso.isNullOrBlank() ||
-                _uiState.value.diascompromiso?.toIntOrNull()!! <= 0) {
+            if (!validarCampos()) {
                 _uiState.update {
                     it.copy(errorMessage = "Por favor, completa todos los campos correctamente.", guardado = false)
                 }
@@ -65,7 +68,7 @@ class PrioridadViewModel @Inject constructor(
             }
 
             val existe = _uiState.value.prioridades.firstOrNull {
-                it.Descripcion == _uiState.value.descripcion && it.PrioridadId != _uiState.value.prioridadId
+                it.descripcion == _uiState.value.descripcion && it.prioridadId != _uiState.value.prioridadId
             }
 
             if (existe != null) {
@@ -80,15 +83,16 @@ class PrioridadViewModel @Inject constructor(
         }
     }
 
+
     fun selectedPrioridad(prioridadId: Int) {
         viewModelScope.launch {
             if (prioridadId > 0) {
                 val prioridad = prioridadRepository.getPrioridad(prioridadId)
                 _uiState.update { currentState ->
                     currentState.copy(
-                        prioridadId = prioridad?.PrioridadId,
-                        descripcion = prioridad?.Descripcion ?: "",
-                        diascompromiso = prioridad?.DiasCompromiso?.toString() ?: "",
+                        prioridadId = prioridad?.prioridadId,
+                        descripcion = prioridad?.descripcion ?: "",
+                        diascompromiso = prioridad?.diasCompromiso?.toString() ?: "",
                         errorMessage = null
                     )
                 }
@@ -135,7 +139,7 @@ data class UiState(
 )
 
 fun UiState.toEntity() = PrioridadEntity(
-    PrioridadId = prioridadId,
-    Descripcion = descripcion ?: "",
-    DiasCompromiso = diascompromiso?.toIntOrNull() ?: 0
+    prioridadId = prioridadId,
+    descripcion = descripcion ?: "",
+    diasCompromiso = diascompromiso?.toIntOrNull() ?: 0
 )

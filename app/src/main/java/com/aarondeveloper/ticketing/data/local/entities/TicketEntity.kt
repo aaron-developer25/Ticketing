@@ -7,10 +7,10 @@ import java.util.Date
 @Entity(tableName = "Tickets")
 data class TicketEntity (
     @PrimaryKey
-    val TicketId: Int? = null,
-    var PrioridadId: Int? = null,
-    var Fecha: String? = "",
-    var Cliente: String = "",
-    var Asunto: String = "",
-    var Descripcion: String = ""
+    val ticketId: Int? = null,
+    val prioridadId: Int,
+    val fecha: String? = "",
+    val cliente: String = "",
+    val asunto: String = "",
+    val descripcion: String = ""
 )

@@ -64,6 +64,7 @@ fun NavigationDrawer(
                     items = listOf(
                         MenuItem("Home", Icons.Default.Home),
                         MenuItem("Prioridades", Icons.Default.DateRange),
+                        MenuItem("Sistemas", Icons.Default.Star),
                         MenuItem("Tickets", Icons.Default.MailOutline),
                         MenuItem("Compartir", Icons.Default.Share),
                         MenuItem("Ajustes", Icons.Default.Settings),

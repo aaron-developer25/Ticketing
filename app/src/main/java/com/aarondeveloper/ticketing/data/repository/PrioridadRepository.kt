@@ -1,4 +1,4 @@
-package com.aarondeveloper.ticketing.data.local.repository
+package com.aarondeveloper.ticketing.data.repository
 
 import com.aarondeveloper.ticketing.data.local.dao.PrioridadDao
 import com.aarondeveloper.ticketing.data.local.entities.PrioridadEntity

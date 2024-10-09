@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "Prioridades")
 data class PrioridadEntity (
     @PrimaryKey
-    val PrioridadId: Int? = null,
-    var Descripcion: String = "",
-    var DiasCompromiso: Int? = null
+    val prioridadId: Int? = null,
+    val descripcion: String = "",
+    val diasCompromiso: Int? = null
 )
