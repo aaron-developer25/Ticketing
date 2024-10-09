@@ -19,6 +19,10 @@ import com.aarondeveloper.ticketing.presentation.screens.perioridades.CreatePrio
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.DeletePrioridadesScreen
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.EditPrioridadesScreen
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.IndexPrioridadesScreen
+import com.aarondeveloper.ticketing.presentation.screens.sistemas.CreateSistemasScreen
+import com.aarondeveloper.ticketing.presentation.screens.sistemas.DeleteSistemasScreen
+import com.aarondeveloper.ticketing.presentation.screens.sistemas.EditSistemasScreen
+import com.aarondeveloper.ticketing.presentation.screens.sistemas.IndexSistemasScreen
 import com.aarondeveloper.ticketing.presentation.screens.tickets.CreateTicketScreen
 import com.aarondeveloper.ticketing.presentation.screens.tickets.DeleteTicketsScreen
 import com.aarondeveloper.ticketing.presentation.screens.tickets.EditTicketScreen
@@ -173,6 +177,73 @@ fun NavigationNavHost(
 
 
 
+
+
+            composable<Screen.ControlPanelSistemas> {
+                IndexSistemasScreen(
+                    onDrawerToggle = {
+                        isDrawerVisible.value = !isDrawerVisible.value
+                    },
+                    goToSistema = {
+                        navHostController.navigate(Screen.ControlPanelSistemas)
+                    },
+                    createSistema = {
+                        navHostController.navigate(Screen.CrearSistemas)
+                    },
+                    editSistema = {
+                        navHostController.navigate(Screen.EditarSistemas(it))
+                    },
+                    deleteSistema = {
+                        navHostController.navigate(Screen.EliminarSistemas(it))
+                    }
+                )
+            }
+
+            composable<Screen.CrearSistemas> {
+                CreateSistemasScreen(
+                    onDrawerToggle = {
+                        isDrawerVisible.value = !isDrawerVisible.value
+                    },
+                    goToSistema = {
+                        navHostController.navigate(Screen.ControlPanelSistemas)
+                    }
+                )
+            }
+
+            composable<Screen.EditarSistemas> { backStackEntry ->
+                val sistemaId = backStackEntry.arguments?.getInt("sistemaId")
+                if (sistemaId != null) {
+
+                    EditSistemasScreen(
+                        sistemaId = sistemaId,
+                        onDrawerToggle = {
+                            isDrawerVisible.value = !isDrawerVisible.value
+                        },
+                        goToSistema = {
+                            navHostController.navigate(Screen.ControlPanelSistemas)
+                        }
+                    )
+                }
+            }
+
+            composable<Screen.EliminarSistemas> { backStackEntry ->
+                val sistemaId = backStackEntry.arguments?.getInt("sistemaId")
+                if (sistemaId != null) {
+
+                    DeleteSistemasScreen(
+                        sistemaId = sistemaId,
+                        onDrawerToggle = {
+                            isDrawerVisible.value = !isDrawerVisible.value
+                        },
+                        goToSistema = {
+                            navHostController.navigate(Screen.ControlPanelSistemas)
+                        }
+                    )
+                }
+            }
+
+
+
             composable<Screen.Compartir> {
                 CompartirScreen(
                     onDrawerToggle = { isDrawerVisible.value = !isDrawerVisible.value }
@@ -196,6 +267,7 @@ fun NavigationNavHost(
                 when (itemTitle) {
                     "Home" -> navHostController.navigate(Screen.Home)
                     "Prioridades" -> navHostController.navigate(Screen.ControlPanelPrioridades)
+                    "Sistemas" -> navHostController.navigate(Screen.ControlPanelSistemas)
                     "Tickets" -> navHostController.navigate(Screen.ControlPanelTickets)
                     "Compartir" -> navHostController.navigate(Screen.Compartir)
                     "Ajustes" -> navHostController.navigate(Screen.Ajustes)
@@ -235,6 +307,17 @@ sealed class Screen {
     data class EditarTickets(val ticketId: Int?) : Screen()
     @Serializable
     data class EliminarTickets(val ticketId: Int) : Screen()
+
+
+    //Sistemas
+    @Serializable
+    object ControlPanelSistemas : Screen()
+    @Serializable
+    object CrearSistemas : Screen()
+    @Serializable
+    data class EditarSistemas(val sistemaId: Int?) : Screen()
+    @Serializable
+    data class EliminarSistemas(val sistemaId: Int) : Screen()
 
 
     @Serializable
