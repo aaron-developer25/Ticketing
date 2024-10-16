@@ -66,6 +66,7 @@ fun NavigationDrawer(
                         MenuItem("Prioridades", Icons.Default.DateRange),
                         MenuItem("Sistemas", Icons.Default.Star),
                         MenuItem("Tickets", Icons.Default.MailOutline),
+                        MenuItem("Partidos", Icons.Default.Face),
                         MenuItem("Compartir", Icons.Default.Share),
                         MenuItem("Ajustes", Icons.Default.Settings),
                         MenuItem("Información", Icons.Default.Info)
