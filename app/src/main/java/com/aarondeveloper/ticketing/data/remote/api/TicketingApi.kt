@@ -1,6 +1,6 @@
 package com.aarondeveloper.ticketing.data.remote.api
 
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,9 +17,9 @@ interface TicketingApi {
     @GET("api/Sistemas/{id}")
     suspend fun getSistemaById(@Path("id") id: Int): SistemaDto
     @POST("api/Sistemas")
-    suspend fun addSistemas(@Body sistemaDto: SistemaDto): Response<SistemaDto>
+    suspend fun addSistemas(@Body sistemaDto: SistemaDto): SistemaDto
     @PUT("api/Sistemas")
-    suspend fun updateSistemas(@Body sistemaDto: SistemaDto): Response<SistemaDto>
+    suspend fun updateSistemas(@Body sistemaDto: SistemaDto): SistemaDto
     @DELETE("api/Sistemas/{id}")
-    suspend fun deleteSistemas(@Path("id") id: Int): Response<SistemaDto>
+    suspend fun deleteSistemas(@Path("id") id: Int): SistemaDto
 }

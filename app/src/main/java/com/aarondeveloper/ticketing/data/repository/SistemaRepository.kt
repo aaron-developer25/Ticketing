@@ -1,15 +1,15 @@
 package com.aarondeveloper.ticketing.data.repository
 
-import com.aarondeveloper.ticketing.data.remote.api.TicketingApi
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.remotedatasource.TicketingDataSource
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import javax.inject.Inject
 
 class SistemaRepository @Inject constructor(
-    private val ticketingApi: TicketingApi
+    private val ticketingDataSource: TicketingDataSource
 ) {
-    suspend fun getSistemas(): List<SistemaDto> = ticketingApi.getSistemas()
-    suspend fun get(id: Int): SistemaDto = ticketingApi.getSistemaById(id)
-    suspend fun save(sistemaDto: SistemaDto) = ticketingApi.addSistemas(sistemaDto)
-    suspend fun update(sistemaDto: SistemaDto) = ticketingApi.updateSistemas(sistemaDto)
-    suspend fun delete(id: Int) = ticketingApi.deleteSistemas(id)
+    suspend fun getSistemas(): List<SistemaDto> = ticketingDataSource.getSistemas()
+    suspend fun get(id: Int): SistemaDto = ticketingDataSource.getSistemaById(id)
+    suspend fun save(sistemaDto: SistemaDto) = ticketingDataSource.addSistemas(sistemaDto)
+    suspend fun update(sistemaDto: SistemaDto) = ticketingDataSource.updateSistemas(sistemaDto)
+    suspend fun delete(id: Int) = ticketingDataSource.deleteSistemas(id)
 }

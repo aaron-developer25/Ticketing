@@ -1,9 +1,8 @@
 package com.aarondeveloper.ticketing.presentation.screens.sistemas
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aarondeveloper.ticketing.data.remote.dao.SistemaDto
+import com.aarondeveloper.ticketing.data.remote.dto.SistemaDto
 import com.aarondeveloper.ticketing.data.repository.SistemaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,14 +48,10 @@ class SistemaViewModel @Inject constructor(
                 sistemaId = null,
                 nombre = _uiState.value.nombre!!
             )
-            val response = sistemaRepository.save(nuevoSistema)
-            if (response.isSuccessful) {
-                _uiState.update { it.copy(errorMessage = null, guardado = true) }
-                getSistemas()
-            }
-            else {
-                _uiState.update { it.copy(errorMessage = "Error al guardar el sistema: ${response.message()}", guardado = false) }
-            }
+            sistemaRepository.save(nuevoSistema)
+            _uiState.update { it.copy(errorMessage = null, guardado = true) }
+            getSistemas()
+
         }
     }
 
@@ -92,14 +87,9 @@ class SistemaViewModel @Inject constructor(
                 nombre = _uiState.value.nombre!!
             )
 
-            val response = sistemaRepository.update(sistemaActualizado)
-            if (response.isSuccessful) {
-                _uiState.update { it.copy(errorMessage = null, guardado = true) }
-                getSistemas()
-            }
-            else {
-                _uiState.update { it.copy(errorMessage = "Error al actualizar el sistema: ${response.message()}", guardado = false) }
-            }
+            sistemaRepository.update(sistemaActualizado)
+            _uiState.update { it.copy(errorMessage = null, guardado = true) }
+            getSistemas()
         }
     }
 

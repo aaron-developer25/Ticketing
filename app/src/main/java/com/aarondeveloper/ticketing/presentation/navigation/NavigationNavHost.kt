@@ -15,6 +15,10 @@ import com.aarondeveloper.ticketing.presentation.screens.AjustesScreen
 import com.aarondeveloper.ticketing.presentation.screens.CompartirScreen
 import com.aarondeveloper.ticketing.presentation.screens.HomeScreen
 import com.aarondeveloper.ticketing.presentation.screens.InformacionScreen
+import com.aarondeveloper.ticketing.presentation.screens.partidos.CreatePartidosScreen
+import com.aarondeveloper.ticketing.presentation.screens.partidos.DeletePartidosScreen
+import com.aarondeveloper.ticketing.presentation.screens.partidos.EditPartidosScreen
+import com.aarondeveloper.ticketing.presentation.screens.partidos.IndexPartidosScreen
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.CreatePrioridadesScreen
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.DeletePrioridadesScreen
 import com.aarondeveloper.ticketing.presentation.screens.perioridades.EditPrioridadesScreen
@@ -244,6 +248,74 @@ fun NavigationNavHost(
 
 
 
+
+
+
+            composable<Screen.ControlPanelPartidos> {
+                IndexPartidosScreen(
+                    onDrawerToggle = {
+                        isDrawerVisible.value = !isDrawerVisible.value
+                    },
+                    goToPartido = {
+                        navHostController.navigate(Screen.ControlPanelPartidos)
+                    },
+                    createPartido = {
+                        navHostController.navigate(Screen.CrearPartidos)
+                    },
+                    editPartido = {
+                        navHostController.navigate(Screen.EditarPartidos(it))
+                    },
+                    deletePartido = {
+                        navHostController.navigate(Screen.EliminarPartidos(it))
+                    }
+                )
+            }
+
+            composable<Screen.CrearPartidos> {
+                CreatePartidosScreen(
+                    onDrawerToggle = {
+                        isDrawerVisible.value = !isDrawerVisible.value
+                    },
+                    goToPartido = {
+                        navHostController.navigate(Screen.ControlPanelPartidos)
+                    }
+                )
+            }
+
+            composable<Screen.EditarPartidos> { backStackEntry ->
+                val partidoId = backStackEntry.arguments?.getInt("partidoId")
+                if (partidoId != null) {
+
+                    EditPartidosScreen(
+                        partidoId = partidoId,
+                        onDrawerToggle = {
+                            isDrawerVisible.value = !isDrawerVisible.value
+                        },
+                        goToPartido = {
+                            navHostController.navigate(Screen.ControlPanelPartidos)
+                        }
+                    )
+                }
+            }
+
+            composable<Screen.EliminarPartidos> { backStackEntry ->
+                val partidoId = backStackEntry.arguments?.getInt("partidoId")
+                if (partidoId != null) {
+
+                    DeletePartidosScreen(
+                        partidoId = partidoId,
+                        onDrawerToggle = {
+                            isDrawerVisible.value = !isDrawerVisible.value
+                        },
+                        goToPartido = {
+                            navHostController.navigate(Screen.ControlPanelPartidos)
+                        }
+                    )
+                }
+            }
+
+
+
             composable<Screen.Compartir> {
                 CompartirScreen(
                     onDrawerToggle = { isDrawerVisible.value = !isDrawerVisible.value }
@@ -269,6 +341,7 @@ fun NavigationNavHost(
                     "Prioridades" -> navHostController.navigate(Screen.ControlPanelPrioridades)
                     "Sistemas" -> navHostController.navigate(Screen.ControlPanelSistemas)
                     "Tickets" -> navHostController.navigate(Screen.ControlPanelTickets)
+                    "Partidos" -> navHostController.navigate(Screen.ControlPanelPartidos)
                     "Compartir" -> navHostController.navigate(Screen.Compartir)
                     "Ajustes" -> navHostController.navigate(Screen.Ajustes)
                     "Información" -> navHostController.navigate(Screen.Informacion)
@@ -318,6 +391,17 @@ sealed class Screen {
     data class EditarSistemas(val sistemaId: Int?) : Screen()
     @Serializable
     data class EliminarSistemas(val sistemaId: Int) : Screen()
+
+
+    //Partidos
+    @Serializable
+    object ControlPanelPartidos : Screen()
+    @Serializable
+    object CrearPartidos : Screen()
+    @Serializable
+    data class EditarPartidos(val partidoId: Int?) : Screen()
+    @Serializable
+    data class EliminarPartidos(val partidoId: Int) : Screen()
 
 
     @Serializable

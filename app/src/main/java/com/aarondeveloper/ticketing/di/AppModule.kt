@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.aarondeveloper.ticketing.data.local.database.TicketingDB
 import com.aarondeveloper.ticketing.data.remote.api.TicketingApi
+import com.aarondeveloper.ticketing.data.remote.api.TrackingSportApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -20,6 +21,7 @@ import javax.inject.Singleton
 object AppModule {
 
     const val BASE_URL = "https://sistematicket.azurewebsites.net/"
+    const val BASE_URL2 = "https://sistemadeportes.azurewebsites.net/"
 
     @Provides
     @Singleton
@@ -40,6 +42,16 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideTrackingSportApi(moshi: Moshi): TrackingSportApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL2)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(TrackingSportApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideTicketingDB(@ApplicationContext appContext: Context) =
         Room.databaseBuilder(
             appContext,
@@ -53,4 +65,10 @@ object AppModule {
 
     @Provides
     fun provideTicketDao(ticketingDB: TicketingDB) = ticketingDB.ticketDao()
+
+    @Provides
+    fun provideSistemaDao(ticketingDB: TicketingDB) = ticketingDB.sistemaDao()
+
+    @Provides
+    fun providePartidoDao(ticketingDB: TicketingDB) = ticketingDB.partidoDao()
 }
